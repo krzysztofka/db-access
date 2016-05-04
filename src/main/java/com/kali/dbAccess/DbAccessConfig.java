@@ -18,7 +18,7 @@ public class DbAccessConfig {
     @Bean
     public DataSource dataSource() {
         return new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.DERBY)
+                .setType(EmbeddedDatabaseType.HSQL)
                 .addScript("db/sql/create-db.sql")
                 .build();
     }
