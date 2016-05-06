@@ -1,4 +1,4 @@
-package com.kali.dbAccess.generator;
+package com.kali.dbAccess.generator.templates;
 
 import java.util.Collection;
 import java.util.function.Consumer;

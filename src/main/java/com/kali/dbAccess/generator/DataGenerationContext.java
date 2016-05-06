@@ -20,8 +20,16 @@ public class DataGenerationContext {
         productIds.add(id);
     }
 
+    public void addProducts(Collection<Long> ids) {
+        productIds.addAll(ids);
+    }
+
     public void addCustomer(Long id) {
         customerIds.add(id);
+    }
+
+    public void addCustomers(Collection<Long> ids) {
+        customerIds.addAll(ids);
     }
 
     private Long getRandomValueFromArray(Set<Long> values) {
