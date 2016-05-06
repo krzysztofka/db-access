@@ -1,4 +1,4 @@
 package com.kali.dbAccess.domain;
 
-public class Entity {
+public abstract class Entity {
 }

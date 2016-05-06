@@ -10,6 +10,12 @@ public class Product extends Entity  {
 
     private Integer price;
 
+    public Product() {}
+
+    public Product(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
