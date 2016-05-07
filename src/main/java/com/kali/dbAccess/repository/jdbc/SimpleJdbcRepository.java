@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 public abstract class SimpleJdbcRepository<E extends Entity> {
 
     @Autowired
-    protected JdbcTemplate jdbcTemplate;
+    protected SimpleJdbcInsert simpleJdbcInsert;
 
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public void setSimpleJdbcInsert(SimpleJdbcInsert simpleJdbcInsert) {
+        this.simpleJdbcInsert = simpleJdbcInsert;
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
@@ -43,13 +43,13 @@ public abstract class SimpleJdbcRepository<E extends Entity> {
     }
 
     protected void saveEntity(String table, Map<String, Object> parameters) {
-        new SimpleJdbcInsert(jdbcTemplate)
+        simpleJdbcInsert
                 .withTableName(table)
                 .execute(new MapSqlParameterSource(parameters));
     }
 
     protected Long saveEntity(String table, String idColumn, Map<String, Object> parameters) {
-        return new SimpleJdbcInsert(jdbcTemplate)
+        return simpleJdbcInsert
                 .withTableName(table)
                 .usingGeneratedKeyColumns(idColumn)
                 .executeAndReturnKey(new MapSqlParameterSource(parameters))

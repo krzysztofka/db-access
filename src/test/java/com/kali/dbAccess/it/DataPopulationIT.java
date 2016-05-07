@@ -53,4 +53,8 @@ public class DataPopulationIT {
         int result = jdbcTemplate.queryForObject("SELECT count(*) FROM " + table, Integer.class);
         assertEquals("Wrong size of table: " + table, count, result);
     }
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 }

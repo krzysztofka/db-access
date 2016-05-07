@@ -27,7 +27,7 @@ public class DataGeneratorRunner implements CommandLineRunner {
 
     @Autowired
     @Qualifier(value = "ordersPopulator")
-    private OrdersPopulator ordersPopulator;
+    private DatabasePopulator ordersPopulator;
 
     public void run(String... strings) throws Exception {
         DataGenerationContext context = new DataGenerationContext();
@@ -35,5 +35,17 @@ public class DataGeneratorRunner implements CommandLineRunner {
         customersPopulator.populate(context, CUSTOMER_QUANTITY);
         productsPopulator.populate(context, PRODUCTS_QUANTITY);
         ordersPopulator.populate(context, ORDERS_QUANTITY);
+    }
+
+    public void setCustomersPopulator(DatabasePopulator customersPopulator) {
+        this.customersPopulator = customersPopulator;
+    }
+
+    public void setProductsPopulator(DatabasePopulator productsPopulator) {
+        this.productsPopulator = productsPopulator;
+    }
+
+    public void setOrdersPopulator(DatabasePopulator ordersPopulator) {
+        this.ordersPopulator = ordersPopulator;
     }
 }

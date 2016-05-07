@@ -18,6 +18,6 @@ class RandomCustomerProviderSpec extends Specification {
         assert customer.getId() == null
         assert customer.getEmail() != null
         assert customer.getEmail() ==~ /[_A-Za-z0-9-]+(.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(.[A-Za-z0-9]+)*(.[A-Za-z]{2,})/
-        assert !isEmptyString().matches(customer.getAddress())
+        assert !isEmptyOrNullString().matches(customer.getAddress())
     }
 }
