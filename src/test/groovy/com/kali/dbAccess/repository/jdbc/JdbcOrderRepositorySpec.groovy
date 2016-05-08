@@ -20,8 +20,32 @@ class JdbcOrderRepositorySpec extends Specification {
 
     def simpleJdbcInsert = Mock(SimpleJdbcInsert)
 
+    def orderItemsInsert = Mock(SimpleJdbcInsert)
+
     def setup() {
-        repository.setSimpleJdbcInsert(simpleJdbcInsert);
+        simpleJdbcInsert.withTableName("ORDERS") >> simpleJdbcInsert
+        simpleJdbcInsert.usingGeneratedKeyColumns("id") >> simpleJdbcInsert
+        repository.setSimpleJdbcInsert(simpleJdbcInsert)
+
+        orderItemsInsert.withTableName("ORDER_ITEMS") >> orderItemsInsert
+        repository.setOrderItemInsert(orderItemsInsert)
+    }
+
+    def "should init jdbc insert"() {
+        when:
+        repository.setSimpleJdbcInsert(simpleJdbcInsert)
+
+        then:
+        1 * simpleJdbcInsert.withTableName("ORDERS") >> simpleJdbcInsert
+        1 * simpleJdbcInsert.usingGeneratedKeyColumns("id") >> simpleJdbcInsert
+    }
+
+    def "should init order items jdbc insert"() {
+        when:
+        repository.setOrderItemInsert(orderItemsInsert)
+
+        then:
+        1 * orderItemsInsert.withTableName("ORDER_ITEMS")
     }
 
     def "should map order to table columns"() {
@@ -49,15 +73,27 @@ class JdbcOrderRepositorySpec extends Specification {
     }
 
     def "should save order with all order items"() {
+        given:
+        def id =  Long.valueOf(1)
+
         when:
         repository.save(order)
 
         then:
-        1 * simpleJdbcInsert.withTableName("ORDERS") >> simpleJdbcInsert
-        1 * simpleJdbcInsert.usingGeneratedKeyColumns("id") >> simpleJdbcInsert
-        1 * simpleJdbcInsert.executeAndReturnKey(_ as MapSqlParameterSource) >> Long.valueOf(1)
+        1 * simpleJdbcInsert.executeAndReturnKey(_ as Map) >> id
 
-        2 * simpleJdbcInsert.withTableName("ORDER_ITEMS") >> simpleJdbcInsert
-        2 * simpleJdbcInsert.execute(_ as MapSqlParameterSource)
+        2 * orderItemsInsert.execute(_ as Map)
+    }
+
+    def "should set id on order items before insert"() {
+        given:
+        def id =  Long.valueOf(33)
+        simpleJdbcInsert.executeAndReturnKey(_ as Map) >> id
+
+        when:
+        repository.save(order)
+
+        then:
+        orderItems.each { assert id.equals(it.getOrderId())}
     }
 }

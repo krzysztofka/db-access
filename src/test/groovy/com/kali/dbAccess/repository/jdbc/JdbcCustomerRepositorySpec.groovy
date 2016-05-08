@@ -15,7 +15,18 @@ class JdbcCustomerRepositorySpec extends Specification {
     def simpleJdbcInsert = Mock(SimpleJdbcInsert)
 
     def setup() {
+        simpleJdbcInsert.withTableName("CUSTOMERS") >> simpleJdbcInsert
+        simpleJdbcInsert.usingGeneratedKeyColumns("id") >> simpleJdbcInsert
         repository.setSimpleJdbcInsert(simpleJdbcInsert)
+    }
+
+    def "should init jdbc insert"() {
+        when:
+        repository.setSimpleJdbcInsert(simpleJdbcInsert)
+
+        then:
+        1 * simpleJdbcInsert.withTableName("CUSTOMERS") >> simpleJdbcInsert
+        1 * simpleJdbcInsert.usingGeneratedKeyColumns("id") >> simpleJdbcInsert
     }
 
     def "should map customer to table columns"() {
@@ -29,13 +40,14 @@ class JdbcCustomerRepositorySpec extends Specification {
     }
 
     def "should init and execute simple jdbc insert when saving new customer"() {
+        given:
+        def id = Long.valueOf(123)
+
         when:
-        def id = repository.save(customer)
+        def result = repository.save(customer)
 
         then:
-        1 * simpleJdbcInsert.withTableName("CUSTOMERS") >> simpleJdbcInsert
-        1 * simpleJdbcInsert.usingGeneratedKeyColumns("id") >> simpleJdbcInsert
-        1 * simpleJdbcInsert.executeAndReturnKey(_ as MapSqlParameterSource) >> Long.valueOf(123)
-        assert id == 123
+        1 * simpleJdbcInsert.executeAndReturnKey(_ as Map) >> id
+        assert result.equals(id)
     }
 }

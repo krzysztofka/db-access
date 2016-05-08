@@ -15,7 +15,18 @@ class JdbcProductRepositorySpec extends Specification {
     def simpleJdbcInsert = Mock(SimpleJdbcInsert)
 
     def setup() {
+        simpleJdbcInsert.withTableName("PRODUCTS") >> simpleJdbcInsert
+        simpleJdbcInsert.usingGeneratedKeyColumns("id") >> simpleJdbcInsert
         repository.setSimpleJdbcInsert(simpleJdbcInsert)
+    }
+
+    def "should init jdbc insert"() {
+        when:
+        repository.setSimpleJdbcInsert(simpleJdbcInsert)
+
+        then:
+        1 * simpleJdbcInsert.withTableName("PRODUCTS") >> simpleJdbcInsert
+        1 * simpleJdbcInsert.usingGeneratedKeyColumns("id") >> simpleJdbcInsert
     }
 
     def "should map product to table columns"() {
@@ -29,14 +40,15 @@ class JdbcProductRepositorySpec extends Specification {
         assert !paramsMap.containsKey('id')
     }
 
-   def "should init and execute simple jdbc insert when saving new product"() {
+    def "should init and execute simple jdbc insert when saving new product"() {
+        given:
+        def id = Long.valueOf(12)
+        simpleJdbcInsert.executeAndReturnKey(_ as Map) >> id
+
         when:
-        def id = repository.save(product)
+        def result = repository.save(product)
 
         then:
-        1 * simpleJdbcInsert.withTableName("PRODUCTS") >> simpleJdbcInsert
-        1 * simpleJdbcInsert.usingGeneratedKeyColumns("id") >> simpleJdbcInsert
-        1 * simpleJdbcInsert.executeAndReturnKey(_ as MapSqlParameterSource) >> Long.valueOf(12)
-        assert id == 12
+        assert id.equals(result)
     }
 }

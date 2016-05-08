@@ -2,8 +2,6 @@ package com.kali.dbAccess.repository.jdbc;
 
 import com.kali.dbAccess.domain.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +13,14 @@ import java.util.stream.Collectors;
 
 public abstract class SimpleJdbcRepository<E extends Entity> {
 
-    @Autowired
+
     protected SimpleJdbcInsert simpleJdbcInsert;
 
+    @Autowired
     public void setSimpleJdbcInsert(SimpleJdbcInsert simpleJdbcInsert) {
-        this.simpleJdbcInsert = simpleJdbcInsert;
+        this.simpleJdbcInsert = simpleJdbcInsert
+                .withTableName(tableName())
+                .usingGeneratedKeyColumns(idColumn());
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
@@ -29,7 +30,7 @@ public abstract class SimpleJdbcRepository<E extends Entity> {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Long save(E entity) {
-        return saveEntity(entity);
+        return saveEntityAndReturnKey(entity);
     }
 
     protected String idColumn() {
@@ -38,22 +39,9 @@ public abstract class SimpleJdbcRepository<E extends Entity> {
 
     protected abstract String tableName();
 
-    protected Long saveEntity(E entity) {
-        return saveEntity(tableName(), idColumn(), toParameters(entity));
-    }
 
-    protected void saveEntity(String table, Map<String, Object> parameters) {
-        simpleJdbcInsert
-                .withTableName(table)
-                .execute(new MapSqlParameterSource(parameters));
-    }
-
-    protected Long saveEntity(String table, String idColumn, Map<String, Object> parameters) {
-        return simpleJdbcInsert
-                .withTableName(table)
-                .usingGeneratedKeyColumns(idColumn)
-                .executeAndReturnKey(new MapSqlParameterSource(parameters))
-                .longValue();
+    protected Long saveEntityAndReturnKey(E entity) {
+        return simpleJdbcInsert.executeAndReturnKey(toParameters(entity)).longValue();
     }
 
     protected abstract Map<String, Object> toParameters(E entity);
