@@ -1,14 +1,13 @@
-package com.kali.dbAccess.generator
+package com.kali.dbaccess.generator
 
-import com.kali.dbAccess.domain.Product
-import com.kali.dbAccess.generator.providers.EntityProvider
-import com.kali.dbAccess.repository.ProductRepository
-import spock.lang.Shared
+import com.kali.dbaccess.domain.Product
+import com.kali.dbaccess.generator.providers.EntityProvider
+import com.kali.dbaccess.repository.ProductRepository
 import spock.lang.Specification
 
 class ProductsPopulatorSpec extends Specification {
 
-    def @Shared populator = new ProductsPopulator()
+    def populator = new ProductsPopulator()
 
     def repository = Mock(ProductRepository)
 
@@ -22,16 +21,15 @@ class ProductsPopulatorSpec extends Specification {
     def "should get products from provider then persist them using repository and store references in context"() {
         given:
         def quantity = 3;
-        def context = Mock(DataGenerationContext)
-        def product =  new Product([name: 'product'])
-        def id = 3L;
+        def context = Mock(InMemoryGenerationContext)
+        def product =  new Product([name: 'product', 'price': 1000, 'description': 'desc'])
 
         when:
         populator.populate(context, quantity)
 
         then:
         quantity * entityProvider.getEntity(context) >> product
-        quantity * repository.save(product) >> id
-        quantity * context.addProduct(id)
+        quantity * repository.save(product) >> product
+        quantity * context.newProduct(product)
     }
 }

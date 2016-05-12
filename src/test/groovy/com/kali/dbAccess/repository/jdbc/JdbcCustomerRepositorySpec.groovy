@@ -1,6 +1,6 @@
-package com.kali.dbAccess.repository.jdbc
+package com.kali.dbaccess.repository.jdbc
 
-import com.kali.dbAccess.domain.Customer
+import com.kali.dbaccess.domain.Customer
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import spock.lang.Shared
@@ -10,7 +10,7 @@ class JdbcCustomerRepositorySpec extends Specification {
 
     def @Shared repository = new JdbcCustomerRepository()
 
-    def @Shared customer = new Customer([email: 'test@test.com', address: 'Some address'])
+    def @Shared customer = new Customer([email: 'test@test.com', address: 'Some address', name: 'Some name'])
 
     def simpleJdbcInsert = Mock(SimpleJdbcInsert)
 
@@ -34,9 +34,10 @@ class JdbcCustomerRepositorySpec extends Specification {
         def paramsMap = repository.toParameters(customer)
 
         then:
+        assert paramsMap.size() == 3
         assert customer.getAddress().equals(paramsMap.get('address'))
         assert customer.getEmail().equals(paramsMap.get('email'))
-        assert !paramsMap.containsKey('id')
+        assert customer.getName().equals(paramsMap.get('name'))
     }
 
     def "should init and execute simple jdbc insert when saving new customer"() {
@@ -48,6 +49,7 @@ class JdbcCustomerRepositorySpec extends Specification {
 
         then:
         1 * simpleJdbcInsert.executeAndReturnKey(_ as Map) >> id
-        assert result.equals(id)
+        assert result.equals(customer)
+        assert result.getId().equals(id)
     }
 }

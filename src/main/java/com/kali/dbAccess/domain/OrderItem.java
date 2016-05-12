@@ -1,27 +1,30 @@
-package com.kali.dbAccess.domain;
+package com.kali.dbaccess.domain;
 
-public class OrderItem extends Entity  {
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-    private Long orderId;
+public class OrderItem {
 
-    private Long productId;
+    private Order order;
+
+    private Product product;
 
     private Integer quantity;
 
-    public Long getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Integer getQuantity() {
@@ -30,5 +33,29 @@ public class OrderItem extends Entity  {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OrderItem orderItem = (OrderItem) o;
+
+        return new EqualsBuilder()
+                .append(order.getId(), orderItem.order.getId())
+                .append(product.getId(), orderItem.product.getId())
+                .append(quantity, orderItem.quantity)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(order.getId())
+                .append(product.getId())
+                .append(quantity)
+                .toHashCode();
     }
 }

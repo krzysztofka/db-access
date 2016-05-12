@@ -1,6 +1,6 @@
-package com.kali.dbAccess.generator.providers
+package com.kali.dbaccess.generator.providers
 
-import com.kali.dbAccess.generator.DataGenerationContext
+import com.kali.dbaccess.generator.InMemoryGenerationContext
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -12,7 +12,7 @@ class RandomProductProviderSpec extends Specification {
 
     def "should provide valid product"() {
         given:
-        def product = randomProductProvider.getEntity(new DataGenerationContext());
+        def product = randomProductProvider.getEntity(new InMemoryGenerationContext());
 
         expect:
         assert product != null

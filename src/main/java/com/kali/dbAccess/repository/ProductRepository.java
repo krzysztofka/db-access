@@ -1,6 +1,6 @@
-package com.kali.dbAccess.repository;
+package com.kali.dbaccess.repository;
 
-import com.kali.dbAccess.domain.Product;
+import com.kali.dbaccess.domain.Product;
 
 public interface ProductRepository extends Repository<Product> {
 }

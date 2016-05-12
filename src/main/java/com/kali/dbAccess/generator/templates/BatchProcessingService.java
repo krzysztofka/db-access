@@ -1,4 +1,4 @@
-package com.kali.dbAccess.generator.templates;
+package com.kali.dbaccess.generator.templates;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

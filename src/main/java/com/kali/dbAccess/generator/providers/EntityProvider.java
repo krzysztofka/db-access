@@ -1,9 +1,9 @@
-package com.kali.dbAccess.generator.providers;
+package com.kali.dbaccess.generator.providers;
 
-import com.kali.dbAccess.domain.Entity;
-import com.kali.dbAccess.generator.DataGenerationContext;
+import com.kali.dbaccess.domain.Entity;
+import com.kali.dbaccess.generator.InMemoryGenerationContext;
 
 public interface EntityProvider<E extends Entity> {
 
-    E getEntity(DataGenerationContext context);
+    E getEntity(InMemoryGenerationContext context);
 }

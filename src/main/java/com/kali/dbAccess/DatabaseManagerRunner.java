@@ -1,4 +1,4 @@
-package com.kali.dbAccess;
+package com.kali.dbaccess;
 
 import org.hsqldb.util.DatabaseManagerSwing;
 import org.springframework.boot.CommandLineRunner;
@@ -12,6 +12,7 @@ public class DatabaseManagerRunner implements CommandLineRunner {
 
     private static final String DMS_ARG = "DMS";
 
+    @Override
     public void run(String... args) throws Exception {
         Optional<String> argExist = Arrays.stream(args).filter(DMS_ARG::equals).findAny();
         argExist.ifPresent(x -> DatabaseManagerSwing.main(

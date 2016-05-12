@@ -1,6 +1,6 @@
-package com.kali.dbAccess.generator;
+package com.kali.dbaccess.generator;
 
 public interface DatabasePopulator {
 
-    void populate(DataGenerationContext context, int quantity);
+    void populate(InMemoryGenerationContext context, int quantity);
 }

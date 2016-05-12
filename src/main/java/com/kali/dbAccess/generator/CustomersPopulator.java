@@ -1,15 +1,19 @@
-package com.kali.dbAccess.generator;
+package com.kali.dbaccess.generator;
 
-import com.kali.dbAccess.domain.Customer;
-import com.kali.dbAccess.generator.providers.EntityProvider;
-import com.kali.dbAccess.generator.templates.SimpleDataPopulatorTemplate;
-import com.kali.dbAccess.repository.CustomerRepository;
+import com.kali.dbaccess.domain.Customer;
+import com.kali.dbaccess.generator.providers.EntityProvider;
+import com.kali.dbaccess.generator.templates.SimpleDataPopulatorTemplate;
+import com.kali.dbaccess.repository.CustomerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component(value = "customersPopulator")
 public class CustomersPopulator extends SimpleDataPopulatorTemplate<Customer> implements DatabasePopulator {
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomersPopulator.class);
 
     @Autowired
     private CustomerRepository repository;
@@ -19,8 +23,8 @@ public class CustomersPopulator extends SimpleDataPopulatorTemplate<Customer> im
     private EntityProvider<Customer> entityProvider;
 
     @Override
-    public void persist(Customer item, DataGenerationContext context) {
-        context.addCustomer(repository.save(item));
+    public void persist(Customer item, InMemoryGenerationContext context) {
+        context.newCustomer(repository.save(item));
     }
 
     public void setRepository(CustomerRepository repository) {
@@ -34,5 +38,10 @@ public class CustomersPopulator extends SimpleDataPopulatorTemplate<Customer> im
 
     public void setEntityProvider(EntityProvider<Customer> entityProvider) {
         this.entityProvider = entityProvider;
+    }
+
+    @Override
+    protected Logger getLogger() {
+        return logger;
     }
 }

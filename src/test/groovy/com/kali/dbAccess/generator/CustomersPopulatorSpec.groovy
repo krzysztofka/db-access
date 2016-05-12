@@ -1,8 +1,8 @@
-package com.kali.dbAccess.generator
+package com.kali.dbaccess.generator
 
-import com.kali.dbAccess.domain.Customer
-import com.kali.dbAccess.generator.providers.EntityProvider
-import com.kali.dbAccess.repository.CustomerRepository
+import com.kali.dbaccess.domain.Customer
+import com.kali.dbaccess.generator.providers.EntityProvider
+import com.kali.dbaccess.repository.CustomerRepository
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -22,7 +22,7 @@ class CustomersPopulatorSpec extends Specification {
     def "should get customers from provider then persist them using repository and store references in context"() {
         given:
         def quantity = 3;
-        def context = Mock(DataGenerationContext)
+        def context = Mock(InMemoryGenerationContext)
         def customer =  new Customer([email: 'test@test.com'])
         def id = 3L;
 
@@ -31,7 +31,10 @@ class CustomersPopulatorSpec extends Specification {
 
         then:
         quantity * entityProvider.getEntity(context) >> customer
-        quantity * repository.save(customer) >> id
-        quantity * context.addCustomer(id)
+        quantity * repository.save(customer) >> {
+            customer.setId(id);
+            return customer;
+        }
+        quantity * context.newCustomer(customer)
     }
 }

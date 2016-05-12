@@ -1,4 +1,5 @@
-package com.kali.dbAccess.domain;
+package com.kali.dbaccess.domain;
 
-public abstract class Entity {
+public interface Entity<T> {
+    void setId(T id);
 }

@@ -1,6 +1,7 @@
-package com.kali.dbAccess.repository.jdbc
+package com.kali.dbaccess.repository.jdbc
 
-import com.kali.dbAccess.domain.Product
+import com.kali.dbaccess.domain.Product
+import com.kali.dbaccess.domain.ProductSize
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import spock.lang.Shared
@@ -10,7 +11,7 @@ class JdbcProductRepositorySpec extends Specification {
 
     def @Shared repository = new JdbcProductRepository()
 
-    def @Shared product = new Product([name: 'Name', description: 'Some desc', price: 100])
+    def @Shared product = new Product([name: 'Name', description: 'Some desc', price: 100, size: ProductSize.LARGE])
 
     def simpleJdbcInsert = Mock(SimpleJdbcInsert)
 
@@ -34,21 +35,23 @@ class JdbcProductRepositorySpec extends Specification {
         def paramsMap = repository.toParameters(product)
 
         then:
+        assert paramsMap.size() == 4
         assert product.getName().equals(paramsMap.get('name'))
         assert product.getDescription().equals(paramsMap.get('description'))
         assert product.getPrice().equals(paramsMap.get('price'))
-        assert !paramsMap.containsKey('id')
+        assert product.getSize().equals(paramsMap.get("size"))
     }
 
     def "should init and execute simple jdbc insert when saving new product"() {
         given:
         def id = Long.valueOf(12)
-        simpleJdbcInsert.executeAndReturnKey(_ as Map) >> id
 
         when:
         def result = repository.save(product)
 
         then:
-        assert id.equals(result)
+        1 * simpleJdbcInsert.executeAndReturnKey(_ as Map) >> id
+        assert result.equals(product)
+        assert result.getId().equals(id)
     }
 }

@@ -1,6 +1,6 @@
-package com.kali.dbAccess.repository;
+package com.kali.dbaccess.repository;
 
-import com.kali.dbAccess.domain.Customer;
+import com.kali.dbaccess.domain.Customer;
 
 public interface CustomerRepository extends Repository<Customer> {
 }

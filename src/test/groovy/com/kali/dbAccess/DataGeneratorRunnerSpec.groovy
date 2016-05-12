@@ -1,7 +1,7 @@
-package com.kali.dbAccess
+package com.kali.dbaccess
 
-import com.kali.dbAccess.generator.DataGenerationContext
-import com.kali.dbAccess.generator.DatabasePopulator
+import com.kali.dbaccess.generator.InMemoryGenerationContext
+import com.kali.dbaccess.generator.DatabasePopulator
 import spock.lang.Specification
 
 class DataGeneratorRunnerSpec extends Specification {
@@ -23,10 +23,10 @@ class DataGeneratorRunnerSpec extends Specification {
         runner.run()
 
         then:
-        1 * customerPopulator.populate(_ as DataGenerationContext, _ as Integer)
-        1 * productsPopulator.populate(_ as DataGenerationContext, _ as Integer)
+        1 * customerPopulator.populate(_ as InMemoryGenerationContext, _ as Integer)
+        1 * productsPopulator.populate(_ as InMemoryGenerationContext, _ as Integer)
 
         then:
-        1 * ordersPopulator.populate(_ as DataGenerationContext, _ as Integer)
+        1 * ordersPopulator.populate(_ as InMemoryGenerationContext, _ as Integer)
     }
 }

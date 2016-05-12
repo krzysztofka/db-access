@@ -1,4 +1,4 @@
-package com.kali.dbAccess.generator.templates
+package com.kali.dbaccess.generator.templates
 
 import spock.lang.Specification
 

@@ -1,11 +1,9 @@
-package com.kali.dbAccess.repository;
+package com.kali.dbaccess.repository;
 
 import java.util.Collection;
-import java.util.List;
-
 public interface Repository<E> {
 
-    Long save(E entity);
+    E save(E entity);
 
-    List<Long> saveAll(Collection<E> entities);
+    Collection<E> saveAll(Collection<E> entities);
 }

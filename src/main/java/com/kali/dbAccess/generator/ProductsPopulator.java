@@ -1,15 +1,19 @@
-package com.kali.dbAccess.generator;
+package com.kali.dbaccess.generator;
 
-import com.kali.dbAccess.domain.Product;
-import com.kali.dbAccess.generator.providers.EntityProvider;
-import com.kali.dbAccess.generator.templates.SimpleDataPopulatorTemplate;
-import com.kali.dbAccess.repository.ProductRepository;
+import com.kali.dbaccess.domain.Product;
+import com.kali.dbaccess.generator.providers.EntityProvider;
+import com.kali.dbaccess.generator.templates.SimpleDataPopulatorTemplate;
+import com.kali.dbaccess.repository.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component(value = "productsPopulator")
 public class ProductsPopulator extends SimpleDataPopulatorTemplate<Product> implements DatabasePopulator {
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomersPopulator.class);
 
     @Autowired
     private ProductRepository repository;
@@ -18,8 +22,8 @@ public class ProductsPopulator extends SimpleDataPopulatorTemplate<Product> impl
     @Qualifier("randomProductProvider")
     private EntityProvider<Product> entityProvider;
 
-    public void persist(Product product, DataGenerationContext context) {
-        context.addProduct(repository.save(product));
+    public void persist(Product product, InMemoryGenerationContext context) {
+        context.newProduct(repository.save(product));
     }
 
     public void setRepository(ProductRepository repository) {
@@ -33,5 +37,10 @@ public class ProductsPopulator extends SimpleDataPopulatorTemplate<Product> impl
 
     public void setEntityProvider(EntityProvider<Product> entityProvider) {
         this.entityProvider = entityProvider;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return logger;
     }
 }

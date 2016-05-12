@@ -1,9 +1,12 @@
-package com.kali.dbAccess.domain;
+package com.kali.dbaccess.domain;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Date;
 import java.util.Set;
 
-public class Order extends Entity  {
+public class Order implements Entity<Long>  {
 
     private Long id;
 
@@ -43,5 +46,31 @@ public class Order extends Entity  {
 
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Order order = (Order) o;
+
+        return new EqualsBuilder()
+                .append(id, order.id)
+                .append(customer, order.customer)
+                .append(items, order.items)
+                .append(orderDate, order.orderDate)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(customer)
+                .append(items)
+                .append(orderDate)
+                .toHashCode();
     }
 }

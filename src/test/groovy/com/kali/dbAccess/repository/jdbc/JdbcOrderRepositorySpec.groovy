@@ -1,28 +1,29 @@
-package com.kali.dbAccess.repository.jdbc
+package com.kali.dbaccess.repository.jdbc
 
-import com.kali.dbAccess.domain.Customer
-import com.kali.dbAccess.domain.Order
-import com.kali.dbAccess.domain.OrderItem
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import com.kali.dbaccess.domain.Customer
+import com.kali.dbaccess.domain.Order
+import com.kali.dbaccess.domain.OrderItem
+import com.kali.dbaccess.domain.Product
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
-import spock.lang.Shared
 import spock.lang.Specification
 
 class JdbcOrderRepositorySpec extends Specification {
 
-    def @Shared repository = new JdbcOrderRepository();
+    def repository = new JdbcOrderRepository();
+
+    def order = new Order([customer: new Customer([id: 3L, name: 'Cust']), orderDate: new Date()])
 
     def orderItems =  [
-            new OrderItem([productId: 4L, quantity: 4]),
-            new OrderItem([productId: 5L, quantity: 1])]
-
-    def order = new Order([customer: new Customer(3L), orderDate: new Date(), items: orderItems])
+            new OrderItem([order: order, product: new Product([id: 4L]), quantity: 4]),
+            new OrderItem([order: order, product: new Product([id: 5]), quantity: 1])]
 
     def simpleJdbcInsert = Mock(SimpleJdbcInsert)
 
     def orderItemsInsert = Mock(SimpleJdbcInsert)
 
     def setup() {
+        order.setItems(orderItems as Set)
+
         simpleJdbcInsert.withTableName("ORDERS") >> simpleJdbcInsert
         simpleJdbcInsert.usingGeneratedKeyColumns("id") >> simpleJdbcInsert
         repository.setSimpleJdbcInsert(simpleJdbcInsert)
@@ -61,14 +62,14 @@ class JdbcOrderRepositorySpec extends Specification {
     def "should map order item to table columns"() {
         given:
         def orderItem = orderItems[0];
-        orderItem.setOrderId(33L)
+        orderItem.setOrder(new Order([id: 33L]))
 
         when:
         def paramsMap = repository.toParameters(orderItem)
 
         then:
-        assert orderItem.getOrderId().equals(paramsMap.get('order_id'))
-        assert orderItem.getProductId().equals(paramsMap.get('product_id'))
+        assert orderItem.getOrder().getId().equals(paramsMap.get('order_id'))
+        assert orderItem.getProduct().getId().equals(paramsMap.get('product_id'))
         assert orderItem.getQuantity().equals(paramsMap.get('quantity'))
     }
 
@@ -94,6 +95,6 @@ class JdbcOrderRepositorySpec extends Specification {
         repository.save(order)
 
         then:
-        orderItems.each { assert id.equals(it.getOrderId())}
+        orderItems.each { assert id.equals(it.getOrder().getId())}
     }
 }

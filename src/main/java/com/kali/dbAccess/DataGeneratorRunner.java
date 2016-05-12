@@ -1,8 +1,9 @@
-package com.kali.dbAccess;
+package com.kali.dbaccess;
 
-import com.kali.dbAccess.generator.DataGenerationContext;
-import com.kali.dbAccess.generator.DatabasePopulator;
-import com.kali.dbAccess.generator.OrdersPopulator;
+import com.kali.dbaccess.generator.InMemoryGenerationContext;
+import com.kali.dbaccess.generator.DatabasePopulator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +18,8 @@ public class DataGeneratorRunner implements CommandLineRunner {
 
     public static final int PRODUCTS_QUANTITY = 100;
 
+    private static final Logger logger  = LoggerFactory.getLogger(DataGeneratorRunner.class);
+
     @Autowired
     @Qualifier(value = "customersPopulator")
     private DatabasePopulator customersPopulator;
@@ -29,12 +32,17 @@ public class DataGeneratorRunner implements CommandLineRunner {
     @Qualifier(value = "ordersPopulator")
     private DatabasePopulator ordersPopulator;
 
+    @Override
     public void run(String... strings) throws Exception {
-        DataGenerationContext context = new DataGenerationContext();
+        logger.info("Data generation started");
+
+        InMemoryGenerationContext context = new InMemoryGenerationContext();
 
         customersPopulator.populate(context, CUSTOMER_QUANTITY);
         productsPopulator.populate(context, PRODUCTS_QUANTITY);
         ordersPopulator.populate(context, ORDERS_QUANTITY);
+
+        logger.info("Data generation finished");
     }
 
     public void setCustomersPopulator(DatabasePopulator customersPopulator) {

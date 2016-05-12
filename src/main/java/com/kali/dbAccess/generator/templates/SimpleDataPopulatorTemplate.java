@@ -1,9 +1,10 @@
-package com.kali.dbAccess.generator.templates;
+package com.kali.dbaccess.generator.templates;
 
-import com.kali.dbAccess.domain.Entity;
-import com.kali.dbAccess.generator.DataGenerationContext;
-import com.kali.dbAccess.generator.DatabasePopulator;
-import com.kali.dbAccess.generator.providers.EntityProvider;
+import com.kali.dbaccess.domain.Entity;
+import com.kali.dbaccess.generator.InMemoryGenerationContext;
+import com.kali.dbaccess.generator.DatabasePopulator;
+import com.kali.dbaccess.generator.providers.EntityProvider;
+import org.slf4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.IntStream;
@@ -12,11 +13,16 @@ public abstract class SimpleDataPopulatorTemplate<E extends Entity> implements D
 
     @Override
     @Transactional
-    public void populate(DataGenerationContext context, int quantity) {
+    public void populate(InMemoryGenerationContext context, int quantity) {
+
+        getLogger().debug("Populating database with " + quantity + " items.");
         IntStream.range(0, quantity).forEach(x -> persist(getEntityProvider().getEntity(context), context));
+        getLogger().debug("Finished database population.");
     }
 
-    public abstract void persist(E item, DataGenerationContext context);
+    public abstract void persist(E item, InMemoryGenerationContext context);
 
     public abstract EntityProvider<E> getEntityProvider();
+
+    protected abstract Logger getLogger();
 }

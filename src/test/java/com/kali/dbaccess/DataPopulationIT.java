@@ -1,7 +1,5 @@
-package com.kali.dbAccess.it;
+package com.kali.dbaccess;
 
-import com.kali.dbAccess.Application;
-import com.kali.dbAccess.DataGeneratorRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +11,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-public class DataPopulationIT {
+public class DataPopulationIT extends AbstractSpringIT {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @Test
-    public void testGeneratedDataQuantities() {
-        assertCount("customers", DataGeneratorRunner.CUSTOMER_QUANTITY);
-        assertCount("products", DataGeneratorRunner.PRODUCTS_QUANTITY);
-        assertCount("orders", DataGeneratorRunner.ORDERS_QUANTITY);
-    }
 
     @Test
     public void testOrderToCustomerRelation() {

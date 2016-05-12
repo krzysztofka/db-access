@@ -1,4 +1,4 @@
-package com.kali.dbAccess;
+package com.kali.dbaccess;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;

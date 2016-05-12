@@ -1,6 +1,6 @@
-package com.kali.dbAccess.generator.providers
+package com.kali.dbaccess.generator.providers
 
-import com.kali.dbAccess.generator.DataGenerationContext
+import com.kali.dbaccess.generator.InMemoryGenerationContext
 import spock.lang.*
 
 import static org.hamcrest.Matchers.*
@@ -11,7 +11,7 @@ class RandomCustomerProviderSpec extends Specification {
 
     def "should provide valid customer"() {
         given:
-        def customer = randomCustomerProvider.getEntity(new DataGenerationContext());
+        def customer = randomCustomerProvider.getEntity(new InMemoryGenerationContext());
 
         expect:
         assert customer != null
