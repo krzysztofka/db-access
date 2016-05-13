@@ -5,6 +5,7 @@ import com.kali.dbaccess.generator.GenerationContext;
 import com.kali.dbaccess.generator.DatabasePopulator;
 import com.kali.dbaccess.generator.providers.EntityProvider;
 import com.kali.dbaccess.logging.LogExecutionTime;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.IntStream;
@@ -13,7 +14,7 @@ public abstract class SimpleDataPopulatorTemplate<E extends Entity> implements D
 
     @Override
     @LogExecutionTime
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void populate(GenerationContext context, int quantity) {
         IntStream.range(0, quantity).forEach(x -> persist(getEntityProvider().getEntity(context)));
     }

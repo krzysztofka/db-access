@@ -24,6 +24,7 @@ public class InMemoryGenerationContext implements GenerationContext {
         return getRandomValue(customers);
     }
 
+    @Override
     public List<Product> getRandomUniqueProducts(int quantity) {
         return getUniqueRandomValues(products, quantity);
     }

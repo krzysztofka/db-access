@@ -19,6 +19,7 @@ public class ProductsPopulator extends SimpleDataPopulatorTemplate<Product> impl
     @Qualifier("randomProductProvider")
     private EntityProvider<Product> entityProvider;
 
+    @Override
     protected void persist(Product product) {
         repository.save(product);
     }
