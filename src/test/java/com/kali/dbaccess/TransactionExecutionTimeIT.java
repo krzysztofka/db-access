@@ -4,10 +4,13 @@ import com.kali.dbaccess.generator.DatabasePopulator;
 import com.kali.dbaccess.generator.GenerationContext;
 import com.kali.dbaccess.generator.InMemoryGenerationContext;
 import com.kali.dbaccess.repository.ProductRepository;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+@Ignore
 public class TransactionExecutionTimeIT extends AbstractSpringIT {
 
     private static final int QUANTITY = 10000;
@@ -24,7 +27,7 @@ public class TransactionExecutionTimeIT extends AbstractSpringIT {
     @Autowired
     private JdbcTemplate template;
 
-    //@Test
+    @Test
     public void testTransactionsExecutionTime() {
         long sum = 0;
         for (int i = 0; i < REPETITIONS; i++) {
