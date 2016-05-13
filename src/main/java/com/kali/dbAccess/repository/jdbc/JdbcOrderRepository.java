@@ -79,6 +79,7 @@ public class JdbcOrderRepository extends SimpleJdbcRepository<Order> implements 
                 .build();
     }
 
+    @Override
     public Order find(Long id) {
         Order order = super.find(id);
         order.setItems(fetchItems(order));

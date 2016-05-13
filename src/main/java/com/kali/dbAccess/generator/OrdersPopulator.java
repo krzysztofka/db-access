@@ -37,6 +37,7 @@ public class OrdersPopulator extends BatchDataPopulatorTemplate<Order> implement
         this.repository = repository;
     }
 
+    @Override
     public EntityProvider<Order> getEntityProvider() {
         return entityProvider;
     }
