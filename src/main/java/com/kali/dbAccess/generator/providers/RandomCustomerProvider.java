@@ -1,7 +1,7 @@
 package com.kali.dbaccess.generator.providers;
 
 import com.kali.dbaccess.domain.Customer;
-import com.kali.dbaccess.generator.InMemoryGenerationContext;
+import com.kali.dbaccess.generator.GenerationContext;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class RandomCustomerProvider implements EntityProvider<Customer> {
 
     @Override
-    public Customer getEntity(InMemoryGenerationContext context) {
+    public Customer getEntity(GenerationContext context) {
         Customer customer = new Customer();
         customer.setName(randomName());
         customer.setAddress(randomAddress());
@@ -18,10 +18,7 @@ public class RandomCustomerProvider implements EntityProvider<Customer> {
     }
 
     private String randomName() {
-        return new StringBuilder(RandomStringUtils.randomAlphabetic(8))
-                .append(" ")
-                .append(RandomStringUtils.randomAlphabetic(8))
-                .toString();
+        return RandomStringUtils.randomAlphabetic(8) + " " + RandomStringUtils.randomAlphabetic(8);
     }
 
     private String randomAddress() {

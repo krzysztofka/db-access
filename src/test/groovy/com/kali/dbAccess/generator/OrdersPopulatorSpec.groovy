@@ -16,7 +16,7 @@ class OrdersPopulatorSpec extends Specification {
 
     def batchProcessor = Mock(BatchProcessor)
 
-    def context = Mock(InMemoryGenerationContext)
+    def context = Mock(GenerationContext)
 
     EntityProvider<Order> entityProvider = Mock()
 

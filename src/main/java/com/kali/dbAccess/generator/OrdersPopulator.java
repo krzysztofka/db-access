@@ -4,8 +4,7 @@ import com.kali.dbaccess.domain.Order;
 import com.kali.dbaccess.generator.providers.EntityProvider;
 import com.kali.dbaccess.generator.templates.BatchDataPopulatorTemplate;
 import com.kali.dbaccess.repository.OrderRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -17,8 +16,6 @@ public class OrdersPopulator extends BatchDataPopulatorTemplate<Order> implement
 
     private static final int BATCH_SIZE = 100;
 
-    private static final Logger logger = LoggerFactory.getLogger(OrdersPopulator.class);
-
     @Autowired
     private OrderRepository repository;
 
@@ -27,7 +24,7 @@ public class OrdersPopulator extends BatchDataPopulatorTemplate<Order> implement
     private EntityProvider<Order> entityProvider;
 
     @Override
-    protected void persistAll(Collection<Order> items, InMemoryGenerationContext context) {
+    protected void persistAll(Collection<Order> items, GenerationContext context) {
         repository.saveAll(items);
     }
 

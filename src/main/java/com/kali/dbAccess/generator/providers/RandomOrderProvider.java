@@ -3,13 +3,13 @@ package com.kali.dbaccess.generator.providers;
 import com.kali.dbaccess.domain.Order;
 import com.kali.dbaccess.domain.OrderItem;
 import com.kali.dbaccess.domain.Product;
-import com.kali.dbaccess.generator.InMemoryGenerationContext;
+import com.kali.dbaccess.generator.GenerationContext;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,13 +19,13 @@ public class RandomOrderProvider implements EntityProvider<Order> {
     private static final long DATE_FROM = Timestamp.valueOf("2014-01-01 00:00:00").getTime();
 
     @Override
-    public Order getEntity(InMemoryGenerationContext context) {
+    public Order getEntity(GenerationContext context) {
         Order order = new Order();
         order.setCustomer(context.getRandomCustomer());
         order.setOrderDate(randomDate());
 
         int orderItemsCount = RandomUtils.nextInt(1, 5);
-        List<Product> products = context.getRandomUniqueProducts(orderItemsCount);
+        Collection<Product> products = context.getRandomUniqueProducts(orderItemsCount);
         Set<OrderItem> orderItems = products.stream()
                 .map(product -> generateOrderItem(product, order))
                 .collect(Collectors.toSet());

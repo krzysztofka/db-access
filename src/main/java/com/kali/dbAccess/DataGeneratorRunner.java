@@ -1,13 +1,15 @@
 package com.kali.dbaccess;
 
-import com.kali.dbaccess.generator.InMemoryGenerationContext;
 import com.kali.dbaccess.generator.DatabasePopulator;
+import com.kali.dbaccess.generator.GenerationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.function.Supplier;
 
 @Component
 public class DataGeneratorRunner implements CommandLineRunner {
@@ -32,11 +34,15 @@ public class DataGeneratorRunner implements CommandLineRunner {
     @Qualifier(value = "ordersPopulator")
     private DatabasePopulator ordersPopulator;
 
+    @Autowired
+    @Qualifier("generationContextSupplier")
+    private Supplier<GenerationContext> generationContextSupplier;
+
     @Override
     public void run(String... strings) throws Exception {
         logger.info("Data generation started");
 
-        InMemoryGenerationContext context = new InMemoryGenerationContext();
+        GenerationContext context = generationContextSupplier.get();
 
         customersPopulator.populate(context, CUSTOMER_QUANTITY);
         productsPopulator.populate(context, PRODUCTS_QUANTITY);
@@ -55,5 +61,9 @@ public class DataGeneratorRunner implements CommandLineRunner {
 
     public void setOrdersPopulator(DatabasePopulator ordersPopulator) {
         this.ordersPopulator = ordersPopulator;
+    }
+
+    public void setGenerationContextSupplier(Supplier<GenerationContext> generationContextSupplier) {
+        this.generationContextSupplier = generationContextSupplier;
     }
 }

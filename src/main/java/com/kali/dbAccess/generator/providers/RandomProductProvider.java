@@ -2,7 +2,7 @@ package com.kali.dbaccess.generator.providers;
 
 import com.kali.dbaccess.domain.Product;
 import com.kali.dbaccess.domain.ProductSize;
-import com.kali.dbaccess.generator.InMemoryGenerationContext;
+import com.kali.dbaccess.generator.GenerationContext;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ public class RandomProductProvider implements EntityProvider<Product> {
     private Random random = new Random();
 
     @Override
-    public Product getEntity(InMemoryGenerationContext context) {
+    public Product getEntity(GenerationContext context) {
         Product product = new Product();
         product.setName(randomName());
         product.setDescription(randomDescription());

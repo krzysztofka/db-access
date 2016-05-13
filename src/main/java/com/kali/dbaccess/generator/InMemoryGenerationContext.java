@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-public class InMemoryGenerationContext implements GenerationContext{
+public class InMemoryGenerationContext implements GenerationContext {
 
     private List<Customer> customers = new ArrayList<>();
 

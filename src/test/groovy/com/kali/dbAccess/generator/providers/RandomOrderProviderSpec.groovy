@@ -2,7 +2,7 @@ package com.kali.dbaccess.generator.providers
 
 import com.kali.dbaccess.domain.Customer
 import com.kali.dbaccess.domain.Product
-import com.kali.dbaccess.generator.InMemoryGenerationContext
+import com.kali.dbaccess.generator.GenerationContext
 import spock.lang.Specification
 
 import java.util.stream.Collectors
@@ -12,7 +12,7 @@ class RandomOrderProviderSpec extends Specification {
 
     def randomOrderProvider = new RandomOrderProvider();
 
-    def dataGenerationContext = Mock(InMemoryGenerationContext)
+    def dataGenerationContext = Mock(GenerationContext)
 
     def "should have properties set"() {
         given:

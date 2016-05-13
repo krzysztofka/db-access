@@ -4,7 +4,7 @@ import com.kali.dbaccess.domain.Customer
 import com.kali.dbaccess.domain.Product
 import spock.lang.Specification
 
-class DataGenerationContextSpec extends Specification {
+class InMemoryDataGenerationContextSpec extends Specification {
 
     def context = new InMemoryGenerationContext();
 

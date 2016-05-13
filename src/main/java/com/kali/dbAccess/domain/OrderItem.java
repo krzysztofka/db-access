@@ -53,8 +53,7 @@ public class OrderItem {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(order.getId())
-                .append(product.getId())
+                .append(product)
                 .append(quantity)
                 .toHashCode();
     }

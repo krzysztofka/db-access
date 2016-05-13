@@ -3,8 +3,7 @@ package com.kali.dbaccess.repository.jdbc;
 import com.google.common.collect.ImmutableMap;
 import com.kali.dbaccess.domain.Customer;
 import com.kali.dbaccess.repository.CustomerRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
@@ -14,7 +13,22 @@ public class JdbcCustomerRepository extends SimpleJdbcRepository<Customer> imple
 
     private static final String TABLE_NAME = "CUSTOMERS";
 
-    private static final Logger logger  = LoggerFactory.getLogger(JdbcCustomerRepository.class);
+    private static final String ID = "id";
+
+    private static final String NAME = "name";
+
+    private static final String ADDRESS = "address";
+
+    private static final String EMAIL = "email";
+
+    private RowMapper<Customer> mapper = (rs, rowNum) -> {
+        Customer customer = new Customer();
+        customer.setId(rs.getLong(ID));
+        customer.setName(rs.getString(NAME));
+        customer.setEmail(rs.getString(EMAIL));
+        customer.setAddress(rs.getString(ADDRESS));
+        return customer;
+    };
 
     @Override
     protected String tableName() {
@@ -24,14 +38,14 @@ public class JdbcCustomerRepository extends SimpleJdbcRepository<Customer> imple
     @Override
     protected Map<String, Object> toParameters(Customer customer) {
         return ImmutableMap.<String, Object>builder()
-                .put("name", customer.getName())
-                .put("address", customer.getAddress())
-                .put("email", customer.getEmail())
+                .put(NAME, customer.getName())
+                .put(ADDRESS, customer.getAddress())
+                .put(EMAIL, customer.getEmail())
                 .build();
     }
 
     @Override
-    public Logger getLogger() {
-        return logger;
+    protected RowMapper<Customer> rowMapper() {
+        return mapper;
     }
 }

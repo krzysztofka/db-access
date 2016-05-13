@@ -1,9 +1,10 @@
 package com.kali.dbaccess.generator.templates;
 
 import com.kali.dbaccess.domain.Entity;
-import com.kali.dbaccess.generator.InMemoryGenerationContext;
+import com.kali.dbaccess.generator.GenerationContext;
 import com.kali.dbaccess.generator.DatabasePopulator;
 import com.kali.dbaccess.generator.providers.EntityProvider;
+import com.kali.dbaccess.logging.LogExecutionTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -17,7 +18,8 @@ public abstract class BatchDataPopulatorTemplate<E extends Entity> implements Da
     private BatchProcessor batchProcessor;
 
     @Override
-    public void populate(InMemoryGenerationContext context, int quantity) {
+    @LogExecutionTime
+    public void populate(GenerationContext context, int quantity) {
         int batchSize = batchSize();
         while (quantity > batchSize) {
             quantity -= batchSize;
@@ -30,11 +32,11 @@ public abstract class BatchDataPopulatorTemplate<E extends Entity> implements Da
 
     public abstract EntityProvider<E> getEntityProvider();
 
-    protected abstract void persistAll(Collection<E> items, InMemoryGenerationContext context);
+    protected abstract void persistAll(Collection<E> items, GenerationContext context);
 
     protected abstract int batchSize();
 
-    protected void generatePackage(InMemoryGenerationContext context, int quantity) {
+    protected void generatePackage(GenerationContext context, int quantity) {
         List<E> orders = IntStream.range(0, quantity)
                 .mapToObj(x -> getEntityProvider().getEntity(context))
                 .collect(Collectors.toList());

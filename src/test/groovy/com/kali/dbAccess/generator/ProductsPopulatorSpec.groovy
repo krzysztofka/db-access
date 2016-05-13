@@ -21,7 +21,7 @@ class ProductsPopulatorSpec extends Specification {
     def "should get products from provider then persist them using repository and store references in context"() {
         given:
         def quantity = 3;
-        def context = Mock(InMemoryGenerationContext)
+        def context = Mock(GenerationContext)
         def product =  new Product([name: 'product', 'price': 1000, 'description': 'desc'])
 
         when:
@@ -30,6 +30,5 @@ class ProductsPopulatorSpec extends Specification {
         then:
         quantity * entityProvider.getEntity(context) >> product
         quantity * repository.save(product) >> product
-        quantity * context.newProduct(product)
     }
 }

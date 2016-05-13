@@ -5,22 +5,20 @@ import com.kali.dbaccess.domain.Product;
 import com.kali.dbaccess.domain.ProductSize;
 import com.kali.dbaccess.repository.ProductRepository;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 
 public class JdbcProductRepositoryIT extends AbstractSpringIT {
 
     @Autowired
-    @Qualifier("jdbcProductRepository")
     private ProductRepository repository;
-
-    @Autowired
-    private JdbcTemplate template;
 
     @Transactional
     @Test
@@ -35,12 +33,25 @@ public class JdbcProductRepositoryIT extends AbstractSpringIT {
 
         repository.save(product);
 
-        int count = template.queryForObject("select count(*) from PRODUCTS where id = ?",
-                        new Object[]{product.getId()}, Integer.class);
-        assertEquals(count, 1);
+        Product result = repository.find(product.getId());
+        Assert.assertEquals(product, result);
+    }
 
-        template.query("select description from PRODUCTS where id = ?", pss -> pss.setLong(1, product.getId()), rch -> {
-            assertEquals(description, rch.getString("description"));
-        });
+    @Test
+    public void itShouldReturnRandomProducts() {
+        int size = 4;
+        Collection<Product> products = repository.getRandomEntities(size);
+
+        assertTrue(products.size() == size);
+
+        products.stream().forEach(this::assertProduct);
+    }
+
+    private void assertProduct(Product product) {
+        assertNotNull(product.getId());
+        assertFalse(StringUtils.isEmpty(product.getDescription()));
+        assertFalse(StringUtils.isEmpty(product.getName()));
+        assertTrue(product.getPrice() > 0);
+        assertNotNull(product.getSize());
     }
 }

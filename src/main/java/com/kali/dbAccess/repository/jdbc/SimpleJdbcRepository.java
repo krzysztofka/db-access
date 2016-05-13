@@ -1,10 +1,9 @@
 package com.kali.dbaccess.repository.jdbc;
 
 import com.kali.dbaccess.domain.Entity;
-import com.kali.dbaccess.repository.Repository;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +31,7 @@ public abstract class SimpleJdbcRepository<E extends Entity<Long>> {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public Collection<E> saveAll(Collection<E> entities) {
-        getLogger().debug("Inserting all " + entities.size() + " entities to " + tableName());
-
         entities.stream().forEach(this::save);
-
-        getLogger().debug("Finished insertion of all " + entities.size() + " to " + tableName());
         return entities;
     }
 
@@ -45,6 +40,24 @@ public abstract class SimpleJdbcRepository<E extends Entity<Long>> {
         return saveEntityAndReturnKey(entity);
     }
 
+    public E find(Long id) {
+        String query = new StringBuilder("SELECT * FROM ")
+                .append(tableName())
+                .append(" WHERE ")
+                .append(idColumn())
+                .append(" = ?")
+                .toString();
+        return jdbcTemplate.queryForObject(query, new Object[]{id}, rowMapper());
+    }
+
+    @Transactional
+    public Collection<E> getRandomEntities(int limit) {
+        return jdbcTemplate.query("SELECT * FROM " + tableName() + " ORDER BY RAND() LIMIT ?",
+                new Object[] {limit}, rowMapper());
+    }
+
+    protected abstract RowMapper<E> rowMapper();
+
     protected String idColumn() {
         return "id";
     }
@@ -52,15 +65,10 @@ public abstract class SimpleJdbcRepository<E extends Entity<Long>> {
     protected abstract String tableName();
 
     protected E saveEntityAndReturnKey(E entity) {
-        getLogger().debug("Inserting entity to " + tableName());
-
         Long id = simpleJdbcInsert.executeAndReturnKey(toParameters(entity)).longValue();
         entity.setId(id);
-        getLogger().debug("Entity with id:  " + id + " inserted to " + tableName());
         return entity;
     }
 
     protected abstract Map<String, Object> toParameters(E entity);
-
-    protected abstract Logger getLogger();
 }

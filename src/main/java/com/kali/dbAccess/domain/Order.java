@@ -59,17 +59,17 @@ public class Order implements Entity<Long>  {
         return new EqualsBuilder()
                 .append(id, order.id)
                 .append(customer, order.customer)
-                .append(items, order.items)
                 .append(orderDate, order.orderDate)
+                .append(items, order.items)
                 .isEquals();
     }
+
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(id)
                 .append(customer)
-                .append(items)
                 .append(orderDate)
                 .toHashCode();
     }
