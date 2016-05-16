@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public abstract class SimpleDataPopulatorTemplate<E extends Entity> implements DatabasePopulator {
 
     @Override
-    @LogExecutionTime
+    //@LogExecutionTime
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void populate(GenerationContext context, int quantity) {
         IntStream.range(0, quantity).forEach(x -> persist(getEntityProvider().getEntity(context)));
