@@ -1,13 +1,15 @@
 package com.kali.dbaccess.repository;
 
 import java.util.Collection;
+import java.util.List;
+
 public interface Repository<E, ID> {
 
-    E save(E entity);
+    <S extends E> S save(S entity);
 
-    Collection<E> saveAll(Collection<E> entities);
+    <S extends E> List<S> save(Iterable<S> var1);
 
-    E find(ID id);
+    E getOne(ID id);
 
     Collection<E> getRandomEntities(int limit);
 }

@@ -1,6 +1,6 @@
 package com.kali.dbaccess.generator.templates;
 
-import com.kali.dbaccess.domain.Entity;
+import com.kali.dbaccess.domain.BaseEntity;
 import com.kali.dbaccess.generator.GenerationContext;
 import com.kali.dbaccess.generator.DatabasePopulator;
 import com.kali.dbaccess.generator.providers.EntityProvider;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public abstract class BatchDataPopulatorTemplate<E extends Entity> implements DatabasePopulator {
+public abstract class BatchDataPopulatorTemplate<E extends BaseEntity> implements DatabasePopulator {
 
     @Autowired
     private BatchProcessor batchProcessor;

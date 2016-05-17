@@ -25,7 +25,7 @@ public class OrdersPopulator extends BatchDataPopulatorTemplate<Order> implement
 
     @Override
     protected void persistAll(Collection<Order> items, GenerationContext context) {
-        repository.saveAll(items);
+        repository.save(items);
     }
 
     @Override

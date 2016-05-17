@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -33,7 +34,7 @@ public class JdbcProductRepositoryIT extends AbstractSpringIT {
 
         repository.save(product);
 
-        Product result = repository.find(product.getId());
+        Product result = repository.getOne(product.getId());
         Assert.assertEquals(product, result);
     }
 
@@ -45,6 +46,28 @@ public class JdbcProductRepositoryIT extends AbstractSpringIT {
         assertTrue(products.size() == size);
 
         products.stream().forEach(this::assertProduct);
+    }
+
+    @Test
+    public void itShouldReturnThreeBestsellerProducts() {
+        List<Product> bestsellers = repository.getBestsellerProducts(3);
+        Assert.assertTrue(bestsellers.size() == 3);
+        bestsellers.forEach(this::assertProduct);
+
+        bestsellers.forEach(x -> {
+            x.setDescription("BESTSELLER... " + x.getDescription());
+            int len = x.getDescription().length();
+
+            if (len > 10000) {
+                x.setDescription(x.getDescription().substring(0,  10000));
+            }
+
+            repository.update(x);
+
+            Product result = repository.getOne(x.getId());
+            Assert.assertTrue(result.getDescription().startsWith("BESTSELLER"));
+            System.out.println("Bestseller: " + x.getId());
+        });
     }
 
     private void assertProduct(Product product) {

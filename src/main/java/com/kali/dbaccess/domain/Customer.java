@@ -1,16 +1,25 @@
 package com.kali.dbaccess.domain;
 
+import com.google.common.base.Objects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class Customer implements Entity<Long> {
+import javax.persistence.*;
 
+@Entity(name = "CUSTOMERS")
+public class Customer implements BaseEntity<Long> {
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String address;
 
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String name;
 
     public Customer() {}
@@ -54,26 +63,16 @@ public class Customer implements Entity<Long> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         Customer customer = (Customer) o;
-
-        return new EqualsBuilder()
-                .append(id, customer.id)
-                .append(address, customer.address)
-                .append(email, customer.email)
-                .append(name, customer.name)
-                .isEquals();
+        return Objects.equal(id, customer.id) &&
+                Objects.equal(address, customer.address) &&
+                Objects.equal(email, customer.email) &&
+                Objects.equal(name, customer.name);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .append(address)
-                .append(email)
-                .append(name)
-                .toHashCode();
+        return Objects.hashCode(id, address, email, name);
     }
 }

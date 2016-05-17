@@ -1,31 +1,24 @@
 package com.kali.dbaccess.domain;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import com.google.common.base.Objects;
 
+import javax.persistence.*;
+
+@Entity(name = "ORDER_ITEMS")
+@IdClass(OrderItemPk.class)
 public class OrderItem {
 
+    @Id
+    @Column(name="PRODUCT_ID")
+    private Long productId;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name="ORDER_ID", referencedColumnName="ID")
     private Order order;
 
-    private Product product;
-
+    @Column(nullable = false)
     private Integer quantity;
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 
     public Integer getQuantity() {
         return quantity;
@@ -35,26 +28,33 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         OrderItem orderItem = (OrderItem) o;
-
-        return new EqualsBuilder()
-                .append(order.getId(), orderItem.order.getId())
-                .append(product.getId(), orderItem.product.getId())
-                .append(quantity, orderItem.quantity)
-                .isEquals();
+        return Objects.equal(productId, orderItem.productId) &&
+                Objects.equal(quantity, orderItem.quantity);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(product)
-                .append(quantity)
-                .toHashCode();
+        return Objects.hashCode(productId, quantity);
     }
 }

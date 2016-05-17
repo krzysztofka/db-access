@@ -1,12 +1,18 @@
 package com.kali.dbaccess.repository.jdbc;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.kali.dbaccess.domain.Product;
 import com.kali.dbaccess.domain.ProductSize;
 import com.kali.dbaccess.repository.ProductRepository;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Repository(("jdbcProductRepository"))
 public class JdbcProductRepository extends SimpleJdbcRepository<Product> implements ProductRepository {
@@ -22,6 +28,8 @@ public class JdbcProductRepository extends SimpleJdbcRepository<Product> impleme
     private static final String DESCRIPTION = "description";
 
     private static final String SIZE = "size";
+
+    private static final Set<String> ALL_COLUMNS = ImmutableSet.of(ID, NAME, PRICE, DESCRIPTION, SIZE);
 
     private RowMapper<Product> mapper = (rs, rowNum) -> {
         Product product = new Product();
@@ -48,6 +56,23 @@ public class JdbcProductRepository extends SimpleJdbcRepository<Product> impleme
             builder.put(DESCRIPTION, product.getDescription());
         }
         return builder.build();
+    }
+
+    @Transactional
+    public void update(Product product) {
+        this.update(product, new String[] {DESCRIPTION},
+                Lists.newArrayList(product.getDescription()));
+    }
+
+    @Override
+    public List<Product> getBestsellerProducts(int limit) {
+        String sqlColumns = toColumnStrings("p", ALL_COLUMNS);
+        String sql = new StringBuilder("select ")
+                .append(sqlColumns)
+                .append(" from products p join order_items i on p.id = i.product_id group by ")
+                .append(sqlColumns).append(" order by sum(i.quantity) desc limit ?")
+                .toString();
+        return jdbcTemplate.query(sql, new Object[]{limit}, mapper);
     }
 
     @Override

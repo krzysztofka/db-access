@@ -1,6 +1,7 @@
 package com.kali.dbaccess.repository.jdbc;
 
 import com.google.common.collect.ImmutableMap;
+import com.kali.dbaccess.domain.MonthlyOrderCount;
 import com.kali.dbaccess.domain.Order;
 import com.kali.dbaccess.domain.OrderItem;
 import com.kali.dbaccess.repository.CustomerRepository;
@@ -12,6 +13,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +37,8 @@ public class JdbcOrderRepository extends SimpleJdbcRepository<Order> implements 
 
     private static final String QUANTITY = "quantity";
 
+    private static final String MONTHLY_SQL_SUFFIX = " from orders o group by year(o.order_date), month(o.order_date)";
+
     private SimpleJdbcInsert orderItemInsert;
 
     @Autowired
@@ -46,17 +50,21 @@ public class JdbcOrderRepository extends SimpleJdbcRepository<Order> implements 
     private RowMapper<Order> orderMapper = (rs, rowNum) -> {
         Order order = new Order();
         order.setId(rs.getLong(ID));
-        order.setCustomer(customerRepository.find(rs.getLong(CUSTOMER_ID)));
+        order.setCustomer(customerRepository.getOne(rs.getLong(CUSTOMER_ID)));
         order.setOrderDate(new Date(rs.getTimestamp(ORDER_DATE).getTime()));
         return order;
     };
 
     private RowMapper<OrderItem> orderItemMapper = (rs, rowNum) -> {
         OrderItem orderItem = new OrderItem();
-        orderItem.setProduct(productRepository.find(rs.getLong(PRODUCT_ID)));
+        orderItem.setProductId(rs.getLong(PRODUCT_ID));
         orderItem.setQuantity(rs.getInt(QUANTITY));
         return orderItem;
     };
+
+    private RowMapper<MonthlyOrderCount> monthlyOrderCountRowMapper = (rs, rowNum) ->
+            new MonthlyOrderCount(rs.getInt("month"), rs.getInt("year"), rs.getLong("cnt"));
+
 
     @Override
     protected String tableName() {
@@ -74,14 +82,14 @@ public class JdbcOrderRepository extends SimpleJdbcRepository<Order> implements 
     protected Map<String, Object> toParameters(OrderItem item) {
         return ImmutableMap.<String, Object>builder()
                 .put(ORDER_ID, item.getOrder().getId())
-                .put(PRODUCT_ID, item.getProduct().getId())
+                .put(PRODUCT_ID, item.getProductId())
                 .put(QUANTITY, item.getQuantity())
                 .build();
     }
 
     @Override
-    public Order find(Long id) {
-        Order order = super.find(id);
+    public Order getOne(Long id) {
+        Order order = super.getOne(id);
         order.setItems(fetchItems(order));
         return order;
     }
@@ -92,6 +100,24 @@ public class JdbcOrderRepository extends SimpleJdbcRepository<Order> implements 
             item.setOrder(order);
             return item;
         }).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Long getMonthlyMedian() {
+        return jdbcTemplate.queryForObject(
+                "select median(t.cnt) from (select count(o.id) as cnt" + MONTHLY_SQL_SUFFIX + ") t", Long.class);
+    }
+
+    @Override
+    public Long getMonthlyAverage() {
+        return jdbcTemplate.queryForObject(
+                "select avg(t.cnt) from (select count(o.id) as cnt" + MONTHLY_SQL_SUFFIX + ") t", Long.class);
+    }
+
+    @Override
+    public List<MonthlyOrderCount> getMonthlyOrderCounts() {
+        return jdbcTemplate.query("select year(o.order_date) as year, month(o.order_date) as month, count(o.id) as cnt"
+                + MONTHLY_SQL_SUFFIX, monthlyOrderCountRowMapper);
     }
 
     @Override

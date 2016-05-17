@@ -1,6 +1,7 @@
 package com.kali.dbaccess.repository.jdbc;
 
-import com.kali.dbaccess.domain.Entity;
+import com.google.common.collect.Lists;
+import com.kali.dbaccess.domain.BaseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,10 +9,14 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-public abstract class SimpleJdbcRepository<E extends Entity<Long>> {
+public abstract class SimpleJdbcRepository<E extends BaseEntity<Long>> {
 
     protected SimpleJdbcInsert simpleJdbcInsert;
 
@@ -30,17 +35,16 @@ public abstract class SimpleJdbcRepository<E extends Entity<Long>> {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public Collection<E> saveAll(Collection<E> entities) {
-        entities.stream().forEach(this::save);
-        return entities;
+    public <S extends E> List<S> save(Iterable<S> entities) {
+        return StreamSupport.stream(entities.spliterator(), false).map(this::save).collect(Collectors.toList());
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public E save(E entity) {
+    public <S extends E> S save(S entity) {
         return saveEntityAndReturnKey(entity);
     }
 
-    public E find(Long id) {
+    public E getOne(Long id) {
         String query = new StringBuilder("SELECT * FROM ")
                 .append(tableName())
                 .append(" WHERE ")
@@ -48,6 +52,21 @@ public abstract class SimpleJdbcRepository<E extends Entity<Long>> {
                 .append(" = ?")
                 .toString();
         return jdbcTemplate.queryForObject(query, new Object[]{id}, rowMapper());
+    }
+
+    public void update(E entity, String[] properties, List<Object> values) {
+        StringBuilder updateBuilder = new StringBuilder("UPDATE ")
+        .append(tableName())
+        .append(" SET ")
+        .append(toUpdateColumnsStatement(properties))
+        .append(" WHERE ")
+        .append(idColumn())
+        .append(" = ?");
+
+        List<Object> args = Lists.newArrayList(values);
+        args.add(entity.getId());
+
+        jdbcTemplate.update(updateBuilder.toString(), args.toArray());
     }
 
     @Transactional
@@ -64,11 +83,23 @@ public abstract class SimpleJdbcRepository<E extends Entity<Long>> {
 
     protected abstract String tableName();
 
-    protected E saveEntityAndReturnKey(E entity) {
+    protected <S extends E> S saveEntityAndReturnKey(S entity) {
         Long id = simpleJdbcInsert.executeAndReturnKey(toParameters(entity)).longValue();
         entity.setId(id);
         return entity;
     }
 
+    protected String toColumnStrings(String alias, Set<String> columns) {
+        return columns.stream().map(c -> alias + "." + c).collect(Collectors.joining(", "));
+    }
+
+    protected java.sql.Date toSqlDate(LocalDate localDate) {
+        return new java.sql.Date(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+    }
+
     protected abstract Map<String, Object> toParameters(E entity);
+
+    private String toUpdateColumnsStatement(String[] props) {
+        return Stream.of(props).map(prop -> prop + " = ?").collect(Collectors.joining(", "));
+    }
 }

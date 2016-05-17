@@ -14,8 +14,8 @@ class JdbcOrderRepositorySpec extends Specification {
     def order = new Order([customer: new Customer([id: 3L, name: 'Cust']), orderDate: new Date()])
 
     def orderItems =  [
-            new OrderItem([order: order, product: new Product([id: 4L]), quantity: 4]),
-            new OrderItem([order: order, product: new Product([id: 5]), quantity: 1])]
+            new OrderItem([order: order, productId: 4L, quantity: 4]),
+            new OrderItem([order: order, productId: 5L, quantity: 1])]
 
     def simpleJdbcInsert = Mock(SimpleJdbcInsert)
 
@@ -62,14 +62,14 @@ class JdbcOrderRepositorySpec extends Specification {
     def "should map order item to table columns"() {
         given:
         def orderItem = orderItems[0];
-        orderItem.setOrder(new Order([id: 33L]))
+        orderItem.setOrder(new Order(id: 33L))
 
         when:
         def paramsMap = repository.toParameters(orderItem)
 
         then:
         assert orderItem.getOrder().getId().equals(paramsMap.get('order_id'))
-        assert orderItem.getProduct().getId().equals(paramsMap.get('product_id'))
+        assert orderItem.getProductId().equals(paramsMap.get('product_id'))
         assert orderItem.getQuantity().equals(paramsMap.get('quantity'))
     }
 

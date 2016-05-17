@@ -7,9 +7,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -18,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 public class JdbcCustomerRepositoryIT extends AbstractSpringIT {
 
     @Autowired
+    @Qualifier("jdbcCustomerRepository")
     private CustomerRepository repository;
 
     @Transactional
@@ -30,7 +34,7 @@ public class JdbcCustomerRepositoryIT extends AbstractSpringIT {
 
         repository.save(customer);
 
-        Customer result = repository.find(customer.getId());
+        Customer result = repository.getOne(customer.getId());
         Assert.assertEquals(customer, result);
     }
 
@@ -42,6 +46,14 @@ public class JdbcCustomerRepositoryIT extends AbstractSpringIT {
         assertTrue(customers.size() == size);
 
         customers.stream().forEach(this::assertCustomer);
+    }
+
+    @Test
+    public void itShouldReturnCustomersReached1000() {
+        List<Customer> customers = repository
+                .getCustomersExceedingTargetPrice(1000, LocalDate.now().minusMonths(1), LocalDate.now());
+        customers.forEach(this::assertCustomer);
+        customers.forEach(x -> System.out.println("Customer who reached 1000$: " + x.getId()));
     }
 
     private void assertCustomer(Customer customer) {

@@ -1,18 +1,29 @@
 package com.kali.dbaccess.domain;
 
+import com.google.common.base.Objects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class Product implements Entity<Long> {
+import javax.persistence.*;
 
+@Entity(name = "PRODUCTS")
+public class Product implements BaseEntity<Long> {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column
     private String description;
 
+    @Column(nullable = false)
     private Integer price;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ProductSize size;
 
     public Product() {}
@@ -64,28 +75,17 @@ public class Product implements Entity<Long> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         Product product = (Product) o;
-
-        return new EqualsBuilder()
-                .append(id, product.id)
-                .append(name, product.name)
-                .append(description, product.description)
-                .append(price, product.price)
-                .append(size, product.size)
-                .isEquals();
+        return Objects.equal(id, product.id) &&
+                Objects.equal(name, product.name) &&
+                Objects.equal(description, product.description) &&
+                Objects.equal(price, product.price) &&
+                size == product.size;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .append(name)
-                .append(description)
-                .append(price)
-                .append(size)
-                .toHashCode();
+        return Objects.hashCode(id, name, description, price, size);
     }
 }

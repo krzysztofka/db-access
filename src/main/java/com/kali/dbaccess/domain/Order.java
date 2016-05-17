@@ -3,17 +3,26 @@ package com.kali.dbaccess.domain;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
-public class Order implements Entity<Long>  {
+@Entity(name = "ORDERS")
+public class Order implements BaseEntity<Long> {
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name="CUSTOMER_ID")
     private Customer customer;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<OrderItem> items;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "ORDER_DATE")
     private Date orderDate;
 
     public Long getId() {

@@ -36,7 +36,7 @@ public class RandomOrderProvider implements EntityProvider<Order> {
 
     private OrderItem generateOrderItem(Product product, Order order) {
         OrderItem orderItem = new OrderItem();
-        orderItem.setProduct(product);
+        orderItem.setProductId(product.getId());
         orderItem.setOrder(order);
         orderItem.setQuantity(RandomUtils.nextInt(1, 100));
         return orderItem;

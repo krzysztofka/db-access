@@ -33,7 +33,7 @@ public class RandomProductProvider implements EntityProvider<Product> {
     }
 
     private Integer randomPrice() {
-        return RandomUtils.nextInt(10, 9000);
+        return RandomUtils.nextInt(1, 100);
     }
 
     private ProductSize randomSize() {

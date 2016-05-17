@@ -56,6 +56,6 @@ class OrdersPopulatorSpec extends Specification {
         populator.persistAll(orders, context)
 
         then:
-        1 * repository.saveAll(orders)
+        1 * repository.save(orders)
     }
 }

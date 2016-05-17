@@ -1,5 +1,7 @@
 package com.kali.dbaccess.domain;
 
-public interface Entity<T> {
+public interface BaseEntity<T> {
     void setId(T id);
+
+    T getId();
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class CustomersPopulator extends SimpleDataPopulatorTemplate<Customer> implements DatabasePopulator {
 
     @Autowired
+    @Qualifier("jdbcCustomerRepository")
     private CustomerRepository repository;
 
     @Autowired
