@@ -18,7 +18,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories
+@EnableJpaRepositories(basePackages = "com.kali.dbaccess.domain")
 @EnableAspectJAutoProxy
 @ComponentScan("com.kali.dbaccess")
 public class DbAccessConfig {

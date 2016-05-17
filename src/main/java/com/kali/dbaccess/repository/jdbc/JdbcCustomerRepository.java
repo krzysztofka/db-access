@@ -48,7 +48,7 @@ public class JdbcCustomerRepository extends SimpleJdbcRepository<Customer> imple
                 .append(" join order_items oi on o.id = oi.order_id")
                 .append(" join products p on oi.product_id = p.id")
                 .append(" where o.order_date between ? and ?")
-                .append(" group by c.id having sum (oi.quantity * p.price) > ?");
+                .append(" group by c.id having sum (oi.quantity * p.price) >= ?");
 
         return jdbcTemplate.query(queryBuilder.toString(),  (PreparedStatement ps) -> {
             ps.setDate(1, toSqlDate(from));
