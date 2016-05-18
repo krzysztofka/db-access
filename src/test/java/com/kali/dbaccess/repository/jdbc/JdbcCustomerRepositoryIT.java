@@ -49,11 +49,13 @@ public class JdbcCustomerRepositoryIT extends AbstractSpringIT {
     }
 
     @Test
-    public void itShouldReturnCustomersReached1000() {
+    public void itShouldReturnCustomersWhoReached10000() {
         List<Customer> customers = repository
-                .getCustomersExceedingTargetPrice(1000, LocalDate.now().minusMonths(1), LocalDate.now());
+                .getCustomersExceedingTargetPrice(10000, LocalDate.now().minusMonths(1), LocalDate.now());
+
         customers.forEach(this::assertCustomer);
-        customers.forEach(x -> System.out.println("Customer who reached 1000$: " + x.getId()));
+        customers.forEach(x -> System.out.println("Customer who reached 10000$: " + x.getId()));
+        System.out.println("Total:" + customers.size());
     }
 
     private void assertCustomer(Customer customer) {
