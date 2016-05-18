@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 import java.math.BigInteger;
 import java.util.List;
@@ -34,15 +35,11 @@ public class JpaOrderRepositoryImpl implements JpaOrderRepositoryCustom {
         CriteriaQuery<MonthlyOrderCount> q = cb.createQuery(MonthlyOrderCount.class);
         Root<Order> o = q.from(Order.class);
 
-        q.groupBy(cb.function("year", Integer.class, o.get("orderDate")),
-                cb.function("month", Integer.class, o.get("orderDate")));
+        Expression<Integer> year = cb.function("year", Integer.class, o.get("orderDate"));
+        Expression<Integer> month = cb.function("month", Integer.class, o.get("orderDate"));
 
-        q.select(cb.construct(MonthlyOrderCount.class,
-                cb.function("month", Integer.class, o.get("orderDate")),
-                cb.function("year", Integer.class, o.get("orderDate")),
-                cb.count(o.get("id"))));
+        q.groupBy(year, month).select(cb.construct(MonthlyOrderCount.class, month, year, cb.count(o.get("id"))));
 
         return entityManager.createQuery(q).getResultList();
-
     }
 }
