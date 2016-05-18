@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface JpaProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("select p from com.kali.dbaccess.domain.Product p, com.kali.dbaccess.domain.OrderItem i " +
-            " where p.id = i.productId group by p order by sum(i.quantity) desc")
+    @Query("select p from com.kali.dbaccess.domain.OrderItem i join i.product p " +
+            "group by p order by sum(i.quantity) desc")
     List<Product> getBestsellerProducts(Pageable pageable);
 }

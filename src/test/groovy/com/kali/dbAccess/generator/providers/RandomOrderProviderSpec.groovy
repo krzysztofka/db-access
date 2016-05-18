@@ -26,7 +26,7 @@ class RandomOrderProviderSpec extends Specification {
         assert order.getId() == null
         assert order.getOrderDate() != null
         assert order.getItems().size() == products.size()
-        assert order.getItems().each {assert it.getProductId().equals(products[0].getId())}
+        assert order.getItems().each {assert it.getProduct().equals(products[0])}
     }
 
     def "should use customer from context"() {
@@ -52,7 +52,7 @@ class RandomOrderProviderSpec extends Specification {
             LongStream.range(0, it.get(0)).boxed().map({new Product([id: it])}).collect(Collectors.toList())
         }
         order.getItems().each {
-            assert it.getProductId() < order.getItems().size()
+            assert it.getProduct().getId() < order.getItems().size()
             assert it.getQuantity() > 0
             assert it.getOrder().getId() == null
         }

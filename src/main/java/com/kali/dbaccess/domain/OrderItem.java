@@ -9,8 +9,9 @@ import javax.persistence.*;
 public class OrderItem {
 
     @Id
-    @Column(name="PRODUCT_ID")
-    private Long productId;
+    @ManyToOne
+    @JoinColumn(name="PRODUCT_ID", referencedColumnName="ID")
+    private Product product;
 
     @Id
     @ManyToOne
@@ -28,12 +29,12 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Order getOrder() {
@@ -49,12 +50,12 @@ public class OrderItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderItem orderItem = (OrderItem) o;
-        return Objects.equal(productId, orderItem.productId) &&
+        return Objects.equal(product.getId(), orderItem.getProduct().getId()) &&
                 Objects.equal(quantity, orderItem.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(productId, quantity);
+        return Objects.hashCode(product.getId(), quantity);
     }
 }

@@ -57,7 +57,7 @@ public class JdbcOrderRepository extends SimpleJdbcRepository<Order> implements 
 
     private RowMapper<OrderItem> orderItemMapper = (rs, rowNum) -> {
         OrderItem orderItem = new OrderItem();
-        orderItem.setProductId(rs.getLong(PRODUCT_ID));
+        orderItem.setProduct(productRepository.getOne(rs.getLong(PRODUCT_ID)));
         orderItem.setQuantity(rs.getInt(QUANTITY));
         return orderItem;
     };
@@ -82,7 +82,7 @@ public class JdbcOrderRepository extends SimpleJdbcRepository<Order> implements 
     protected Map<String, Object> toParameters(OrderItem item) {
         return ImmutableMap.<String, Object>builder()
                 .put(ORDER_ID, item.getOrder().getId())
-                .put(PRODUCT_ID, item.getProductId())
+                .put(PRODUCT_ID, item.getProduct().getId())
                 .put(QUANTITY, item.getQuantity())
                 .build();
     }

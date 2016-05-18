@@ -7,22 +7,22 @@ public class OrderItemPk implements Serializable {
 
     private Long order;
 
-    private Long productId;
+    private Long product;
 
     public OrderItemPk() {
     }
 
     public OrderItemPk(Long orderId, Long productId) {
         this.order = orderId;
-        this.productId = productId;
+        this.product = productId;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Long getProduct() {
+        return product;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProduct(Long product) {
+        this.product = product;
     }
 
     public Long getOrder() {
@@ -39,11 +39,11 @@ public class OrderItemPk implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         OrderItemPk that = (OrderItemPk) o;
         return Objects.equal(order, that.order) &&
-                Objects.equal(productId, that.productId);
+                Objects.equal(product, that.product);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(order, productId);
+        return Objects.hashCode(order, product);
     }
 }

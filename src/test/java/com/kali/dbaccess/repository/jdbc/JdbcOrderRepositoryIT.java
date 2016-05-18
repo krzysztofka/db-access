@@ -45,7 +45,7 @@ public class JdbcOrderRepositoryIT extends AbstractSpringIT {
         order.setItems(productRepository.getRandomEntities(2).stream().map(product -> {
             OrderItem orderItem = new OrderItem();
             orderItem.setQuantity(3);
-            orderItem.setProductId(product.getId());
+            orderItem.setProduct(product);
             orderItem.setOrder(order);
             return orderItem;
         }).collect(Collectors.toSet()));
@@ -112,7 +112,7 @@ public class JdbcOrderRepositoryIT extends AbstractSpringIT {
 
     private void assertOrderItem(OrderItem orderItem) {
         assertNotNull(orderItem.getOrder());
-        assertNotNull(orderItem.getProductId());
+        assertNotNull(orderItem.getProduct());
         assertTrue(orderItem.getQuantity() > 0);
     }
 
