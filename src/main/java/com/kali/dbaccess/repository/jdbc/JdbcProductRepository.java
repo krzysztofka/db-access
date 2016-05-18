@@ -58,6 +58,7 @@ public class JdbcProductRepository extends SimpleJdbcRepository<Product> impleme
         return builder.build();
     }
 
+    @Override
     @Transactional
     public void update(Product product) {
         this.update(product, new String[] {DESCRIPTION},

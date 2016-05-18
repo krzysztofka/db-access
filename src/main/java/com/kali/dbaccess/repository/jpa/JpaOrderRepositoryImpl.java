@@ -20,13 +20,13 @@ public class JpaOrderRepositoryImpl implements JpaOrderRepositoryCustom {
     @Override
     public Long getMonthlyMedian() {
         return ((BigInteger) entityManager.createNativeQuery("select median(t.cnt) from (select count(o.id) as cnt " +
-                "from ORDERS o group by YEAR(o.order_date) , MONTH(o.order_date)) t").getSingleResult()).longValue();
+                "from ORDERS o group by YEAR(o.order_date), MONTH(o.order_date)) t").getSingleResult()).longValue();
     }
 
     @Override
     public Long getMonthlyAverage() {
         return ((BigInteger) entityManager.createNativeQuery("select avg(t.cnt) from (select count(o.id) as cnt " +
-                "from ORDERS o group by YEAR(o.order_date) , MONTH(o.order_date)) t").getSingleResult()).longValue();
+                "from ORDERS o group by YEAR(o.order_date), MONTH(o.order_date)) t").getSingleResult()).longValue();
     }
 
     @Override

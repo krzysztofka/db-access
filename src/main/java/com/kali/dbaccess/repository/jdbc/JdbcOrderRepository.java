@@ -94,6 +94,7 @@ public class JdbcOrderRepository extends SimpleJdbcRepository<Order> implements 
         return order;
     }
 
+    @Override
     public Set<OrderItem> fetchItems(Order order) {
         return jdbcTemplate.query("SELECT * from ORDER_ITEMS i where i.order_id = ?",
                 new Object[] {order.getId()}, orderItemMapper).stream().map(item -> {

@@ -8,7 +8,7 @@ public interface JpaOrderRepositoryCustom {
 
     Long getMonthlyMedian();
 
-    public Long getMonthlyAverage();
+    Long getMonthlyAverage();
 
-    public List<MonthlyOrderCount> getMonthlyOrderCounts();
+    List<MonthlyOrderCount> getMonthlyOrderCounts();
 }
