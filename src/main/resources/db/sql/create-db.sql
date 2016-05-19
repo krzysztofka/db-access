@@ -26,3 +26,9 @@ CREATE TABLE order_items (
   quantity integer not null,
   PRIMARY KEY (order_id, product_id)
 );
+
+CREATE VIEW v_order_totals AS (
+    SELECT o.id AS id, SUM(i.quantity * p.price) AS total_price
+        FROM orders o join order_items i ON o.id = i.order_id
+        JOIN products p on p.id = i.product_id GROUP BY o.id
+);

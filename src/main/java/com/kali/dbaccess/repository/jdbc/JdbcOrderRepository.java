@@ -1,7 +1,7 @@
 package com.kali.dbaccess.repository.jdbc;
 
 import com.google.common.collect.ImmutableMap;
-import com.kali.dbaccess.domain.MonthlyOrderCount;
+import com.kali.dbaccess.domain.MonthlyOrderStats;
 import com.kali.dbaccess.domain.Order;
 import com.kali.dbaccess.domain.OrderItem;
 import com.kali.dbaccess.repository.CustomerRepository;
@@ -37,8 +37,6 @@ public class JdbcOrderRepository extends SimpleJdbcRepository<Order> implements 
 
     private static final String QUANTITY = "quantity";
 
-    private static final String MONTHLY_SQL_SUFFIX = " from orders o group by year(o.order_date), month(o.order_date)";
-
     private SimpleJdbcInsert orderItemInsert;
 
     @Autowired
@@ -62,8 +60,13 @@ public class JdbcOrderRepository extends SimpleJdbcRepository<Order> implements 
         return orderItem;
     };
 
-    private RowMapper<MonthlyOrderCount> monthlyOrderCountRowMapper = (rs, rowNum) ->
-            new MonthlyOrderCount(rs.getInt("month"), rs.getInt("year"), rs.getLong("cnt"));
+    private RowMapper<MonthlyOrderStats> monthlyOrderCountRowMapper = (rs, rowNum) ->
+            new MonthlyOrderStats(
+                    rs.getInt("month"),
+                    rs.getInt("year"),
+                    rs.getLong("month_sum"),
+                    rs.getDouble("month_avg"),
+                    rs.getLong("month_median"));
 
 
     @Override
@@ -104,21 +107,11 @@ public class JdbcOrderRepository extends SimpleJdbcRepository<Order> implements 
     }
 
     @Override
-    public Long getMonthlyMedian() {
-        return jdbcTemplate.queryForObject(
-                "select median(t.cnt) from (select count(o.id) as cnt" + MONTHLY_SQL_SUFFIX + ") t", Long.class);
-    }
-
-    @Override
-    public Long getMonthlyAverage() {
-        return jdbcTemplate.queryForObject(
-                "select avg(t.cnt) from (select count(o.id) as cnt" + MONTHLY_SQL_SUFFIX + ") t", Long.class);
-    }
-
-    @Override
-    public List<MonthlyOrderCount> getMonthlyOrderCounts() {
-        return jdbcTemplate.query("select year(o.order_date) as year, month(o.order_date) as month, count(o.id) as cnt"
-                + MONTHLY_SQL_SUFFIX, monthlyOrderCountRowMapper);
+    public List<MonthlyOrderStats> getMonthlyOrderStats() {
+        return jdbcTemplate.query("select year(o.order_date) as year, month(o.order_date) as month, " +
+                "sum(ot.total_price) as month_sum, avg(ot.total_price) as month_avg, " +
+                "median(ot.total_price) as month_median from orders o join v_order_totals ot on o.id = ot.id " +
+                "group by year(o.order_date), month(o.order_date)", monthlyOrderCountRowMapper);
     }
 
     @Override
