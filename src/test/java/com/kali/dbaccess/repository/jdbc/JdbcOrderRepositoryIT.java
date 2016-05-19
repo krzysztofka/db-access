@@ -87,7 +87,8 @@ public class JdbcOrderRepositoryIT extends AbstractSpringIT {
             assertTrue(x.getSum() > 0);
             assertTrue(x.getMedian() > 0);
             assertTrue(x.getAvg() > 0);
-            System.out.println("Monthly orders: " + x.getMonth() + "-" + x.getYear() + " sum: " + x.getSum());
+            System.out.println("Monthly orders: " + x.getMonth() + "-" + x.getYear() +
+                    " sum: " + x.getSum() + "avg: " + x.getAvg() + " median:" + x.getMedian());
         });
     }
 

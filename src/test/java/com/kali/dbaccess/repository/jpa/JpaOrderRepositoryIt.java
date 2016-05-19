@@ -25,7 +25,8 @@ public class JpaOrderRepositoryIT extends AbstractSpringIT {
             assertTrue(x.getAvg() >= 0);
             assertTrue(x.getMedian() >= 0);
             assertTrue(x.getSum() >= 0);
-            System.out.println("Monthly orders: " + x.getMonth() + "-" + x.getYear() + " sum: " + x.getSum());
+            System.out.println("Monthly orders: " + x.getMonth() + "-" + x.getYear() +
+                    " sum: " + x.getSum() + "avg: " + x.getAvg() + " median:" + x.getMedian());
         });
     }
 }
