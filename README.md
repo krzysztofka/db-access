@@ -1,27 +1,28 @@
+# DB Access [![Build Status](https://travis-ci.org/krzysztofka/db-access.svg)](http://travis-ci.org/krzysztofka/db-access?branch=master)
 
-  # DB Access
+What is it?
+-----------
 
-  What is it?
-  -----------
+DB Access is a simple Spring boot application created to test
+and practice various problems related to database access.
 
-  DB Access is a simple Spring boot application created to test 
-  and practice various problems related to database access.
 
-  Requirements
-  ------------
+Requirements
+------------
 
-  Java 1.8
+Java 1.8
 
-  Maven 3.x
+Maven 3.x
 
-  Installation
-  ------------
 
-  `mvn clean package` - builds spring boot executable jar
+Installation
+------------
 
-  `java -jar target/db-access-VERSION.jar` - executes database population runner
+`mvn clean package` - builds spring boot executable jar
 
-  `java -jar target/db-access-VERSION.jar DMS` - additionally starts HSQL Database manager
+`java -jar target/db-access-VERSION.jar` - executes database population runner
 
-  `mvn verifye -P itest` runs integration tests
+`java -jar target/db-access-VERSION.jar DMS` - additionally starts HSQL Database manager
+
+`mvn verifye -P itest` runs integration tests
   
