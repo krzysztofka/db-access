@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-public class JpaOrderRepositoryIT extends AbstractSpringIT {
+public class JpaOrderRepositoryIt extends AbstractSpringIT {
 
     @Autowired
     private JpaOrderRepository repository;
